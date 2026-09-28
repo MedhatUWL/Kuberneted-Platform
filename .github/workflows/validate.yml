@@ -1,0 +1,27 @@
+name: Validate GitOps
+
+on:
+  pull_request:
+    paths:
+      - "gitops/**"
+      - "bootstrap/**"
+      - ".yamllint.yml"
+      - ".github/workflows/validate.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  manifests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ibiqlik/action-yamllint@v3
+      - name: Validate Kubernetes schemas
+        uses: instrumenta/kubeconform-action@master
+        with:
+          args: "-strict -summary -output junit gitops bootstrap"
+      - name: Reject obvious credentials
+        shell: bash
+        run: |
+          ! grep -RInE '(password|token|privateKey):[[:space:]]*([A-Za-z0-9+/=]{16,}|ghp_|eyJ)' gitops bootstrap --include='*.yaml' --include='*.yml'

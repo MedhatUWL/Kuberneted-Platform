@@ -1,0 +1,15 @@
+# Copy to /etc/rancher/rke2/config.yaml on each server after replacing placeholders.
+# Use the control-network address for all cluster membership traffic.
+token: "REPLACE_WITH_PRIVATE_CLUSTER_TOKEN"
+tls-san:
+  - "<api-domain-or-control-ip>"
+write-kubeconfig-mode: "0640"
+# Keep the default RKE2 CNI disabled because Cilium owns pod networking.
+cni: none
+# Cilium replaces kube-proxy and uses the pod network for native routing.
+disable-kube-proxy: true
+node-ip: "<control-network-ip>"
+advertise-address: "<control-network-ip>"
+flannel-iface: "<pod-network-interface>"
+node-taint:
+  - "CriticalAddonsOnly=true:NoExecute"

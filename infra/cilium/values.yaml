@@ -1,0 +1,26 @@
+# Values for the Cilium Helm chart. Pin the chart version in the deployment command.
+kubeProxyReplacement: true
+k8sServiceHost: "<control-plane-control-ip-or-vip>"
+k8sServicePort: 6443
+routingMode: native
+autoDirectNodeRoutes: true
+ipv4NativeRoutingCIDR: "10.42.0.0/16"
+tunnel: disabled
+mtu: 1400
+bpf:
+  masquerade: true
+  hostRouting: hybrid
+ipam:
+  mode: cluster-pool
+  operator:
+    clusterPoolIPv4PodCIDRList:
+      - "10.42.0.0/16"
+    clusterPoolIPv4MaskSize: 24
+operator:
+  replicas: 2
+hubble:
+  enabled: true
+  relay:
+    enabled: true
+  ui:
+    enabled: true
